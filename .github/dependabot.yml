@@ -1,0 +1,13 @@
+# Version updates for the actions used by the workflows. The simulation's pip
+# requirements and container base image are pinned on purpose for
+# reproducibility; they get Dependabot security updates only.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

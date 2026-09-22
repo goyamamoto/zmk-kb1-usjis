@@ -4,6 +4,7 @@ Issues and pull requests are welcome. Japanese or English is fine.
 
 ## Reporting
 
+- **Vulnerabilities**: report them privately, not in a public Issue ([security policy](SECURITY.md)).
 - **Hardware results**: the PID (see the README), the firmware commit, the connection (USB, Bluetooth, 2.4 GHz), the host OS and its keyboard layout, what you did and what happened. Results for the untested n version (`0x071a`) are especially useful.
 - **Bugs**: the steps, the expected and the actual characters, and whether US-JIS substitution was on. If you changed `config/keymap-options.h` or the keymap, say so.
 - Do not attach firmware binaries (`.uf2`, `.hex`, `.elf`); give the commit and the SHA-256 from `build/firmware/build-info.json` instead ([licenses reference](docs/references/licenses.md)).

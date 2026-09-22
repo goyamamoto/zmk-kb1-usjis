@@ -123,7 +123,7 @@ The simulation builds the real pinned `hid.c`, `hid_listener.c` and event manage
 
 ```text
 .
-├── .github/        GitHub Actions workflows (build, simulation, validation)
+├── .github/        GitHub Actions workflows (build, simulation, validation), Dependabot
 ├── config/         west manifest, keymaps, conf files and keymap-options.h
 ├── docs/           substitution spec, architecture, simulation, references
 ├── dts/            devicetree binding of the &usjis behavior

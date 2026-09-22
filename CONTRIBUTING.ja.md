@@ -6,6 +6,7 @@ IssueとPull Requestを歓迎します。日本語でも英語でもかまいま
 
 ## 報告
 
+- **脆弱性**: 公開のIssueではなく、非公開で報告してください（[セキュリティポリシー](SECURITY.md)）。
 - **実機での結果**: PID（READMEを参照）、firmwareのcommit、接続方式（USB、Bluetooth、2.4 GHz）、ホストOSとそのキーボード配列、何をして何が起きたか。未検証のn版（`0x071a`）の結果は特に役立ちます。
 - **不具合**: 手順、期待した文字と実際の文字、US-JIS置換がオンだったか。`config/keymap-options.h`やkeymapを変更した場合は、そのことも書いてください。
 - firmwareのバイナリ（`.uf2`、`.hex`、`.elf`）は添付しないでください。代わりにcommitと、`build/firmware/build-info.json`にあるSHA-256を書いてください（[ライセンス参照](docs/references/licenses.ja.md)）。

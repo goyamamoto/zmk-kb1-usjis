@@ -125,7 +125,7 @@ bash scripts/run-simulation.sh        # ネイティブシミュレーション�
 
 ```text
 .
-├── .github/        GitHub Actionsのworkflow（build、シミュレーション、検証）
+├── .github/        GitHub Actionsのworkflow（build、シミュレーション、検証）、Dependabot
 ├── config/         west manifest、keymap、confファイル、keymap-options.h
 ├── docs/           置換仕様、アーキテクチャ、シミュレーション、参照文書
 ├── dts/            &usjis behaviorのdevicetree binding

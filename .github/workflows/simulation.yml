@@ -38,9 +38,9 @@ jobs:
     # also pulls the image and the pinned sources.
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Cache pinned sources
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             workspace/simulation/zephyr
@@ -48,7 +48,7 @@ jobs:
           key: simulation-sources-${{ hashFiles('tests/simulation/dependencies.json') }}
       - name: Cache simulation image
         id: image-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: build/simulation-image.tar
           key: simulation-image-${{ hashFiles('tests/simulation/Dockerfile', 'tests/simulation/requirements.txt') }}
@@ -64,7 +64,7 @@ jobs:
           docker save -o build/simulation-image.tar "zmk-usjis-simulation:$tag"
       - name: Retain simulation evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: native-simulation-evidence
           path: |

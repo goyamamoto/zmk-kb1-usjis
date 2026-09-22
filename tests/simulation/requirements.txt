@@ -1,0 +1,19 @@
+# Pinned with hashes for `pip install --require-hashes` (linux/amd64, cp38).
+# Generated from the artifacts pip resolved for these versions; regenerate
+# with `pip download --no-deps` + `sha256sum` when changing a version.
+cmake==3.24.1 --hash=sha256:f85f24d679f33ea9c2984549b82dc5ce6db0a8a7f851826c1a8541777d5b007f
+ninja==1.10.0 --hash=sha256:d7a33ff0e1c7b88cbb64d88181ac90c66f69b5663396c21eb2548d935cc98250
+west==0.14.0 --hash=sha256:05ac38e5c6703f1f6ea24e219d81b63b65dc5ce39424f790a13110dfaa983a10
+pyelftools==0.29 --hash=sha256:519f38cf412f073b2d7393aa4682b0190fa901f7c3fa0bff2b82d537690c7fc1
+PyYAML==6.0 --hash=sha256:277a0ef2981ca40581a47093e9e2d13b3f1fbbeffae064c1d21bfceba2030287
+pykwalify==1.8.0 --hash=sha256:731dfa87338cca9f559d1fca2bdea37299116e3139b73f78ca90a543722d6651
+packaging==21.3 --hash=sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522
+intelhex==2.3.0 --hash=sha256:87cc5225657524ec6361354be928adfd56bcf2a3dcc646c40f8f094c39c07db4
+anytree==2.8.0 --hash=sha256:14c55ac77492b11532395049a03b773d14c7e30b22aa012e337b1e983de31521
+colorama==0.4.6 --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
+docopt==0.6.2 --hash=sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491
+pyparsing==3.1.4 --hash=sha256:a6a7ee4235a3f944aa1fa2249307708f893fe5717dc603503c6c7969c070fb7c
+python-dateutil==2.9.0.post0 --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
+ruamel.yaml==0.18.16 --hash=sha256:048f26d64245bae57a4f9ef6feb5b552a386830ef7a826f235ffb804c59efbba
+ruamel.yaml.clib==0.2.8 --hash=sha256:700e4ebb569e59e16a976857c8798aee258dceac7c7d6b50cab63e080058df91
+six==1.17.0 --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274

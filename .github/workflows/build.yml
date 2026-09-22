@@ -1,0 +1,47 @@
+name: Firmware build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "config/**"
+      - "CMakeLists.txt"
+      - "Kconfig"
+      - "zephyr/module.yml"
+      - "dts/**"
+      - "include/**"
+      - "src/**"
+      - "scripts/build-firmware.sh"
+      - ".github/workflows/build.yml"
+  pull_request:
+    paths:
+      - "config/**"
+      - "CMakeLists.txt"
+      - "Kconfig"
+      - "zephyr/module.yml"
+      - "dts/**"
+      - "include/**"
+      - "src/**"
+      - "scripts/build-firmware.sh"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build the B1 US firmware in the pinned image
+        run: bash scripts/build-firmware.sh
+      - name: Show what was built
+        run: cat build/firmware/build-info.json
+      # No artifact upload: firmware binaries are not published from this
+      # repository (docs/references/licenses.md). The build is a check only.

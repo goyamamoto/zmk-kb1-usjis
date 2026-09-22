@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: MIT
+
+# Zephyr 3.2 sources only boards/shields/*/Kconfig.shield (one level), but the
+# Keychron shields live at boards/shields/keychron/<model>/<layout>/. Without
+# this, SHIELD_KEYCHRON_B1_US is never defined, and the pinned ZMK's version.h
+# falls back to v1.0.0 (USB bcdDevice, the Launcher's firmware version).
+# ZEPHYR_MODULE_MODULE_DIR is the pinned ZMK's app/module, exported by Zephyr.
+osource "$(ZEPHYR_MODULE_MODULE_DIR)/../boards/shields/keychron/*/*/Kconfig.shield"
+
+menu "US-JIS substitution"
+
+config ZMK_USJIS
+    bool "US-JIS substitution"
+    default y
+    help
+      Substitutes the symbol input of the US layout so that a host fixed to
+      the Japanese keyboard layout types what the US keycaps show.
+      See docs/design/usjis-substitution.md.
+
+if ZMK_USJIS
+
+config ZMK_USJIS_DEFAULT_ENABLED
+    bool "Mode enabled when no valid setting is stored"
+    default n
+    help
+      The spec defaults to DISABLED on first boot. Test firmware for the
+      hardware measurements can set this to start ENABLED.
+
+config ZMK_USJIS_MAX_ENTRIES
+    int "Press record capacity"
+    default 82
+    help
+      At least the number of physical keys, so that simultaneous presses of
+      physical keys never exceed it (the B1 Pro has 82 matrix positions).
+
+config ZMK_USJIS_LAYER_MASK
+    hex "Layers on which substitution applies (bit mask, 0 = all)"
+    default 0x04
+    help
+      Substitution happens only while at least one of these layers is
+      active. On the B1 Pro the Win position of the OS slide switch holds
+      &mo 2, so 0x04 means "Win mode only"; macOS does not need it.
+
+config ZMK_USJIS_SETTINGS_SAVE_DELAY_MS
+    int "Delay before an applied mode is written to settings (ms)"
+    default 2000
+    help
+      Coalesces repeated toggles into one flash write. Keychron ZMK's own
+      CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE is 60 s, too long: a power cycle
+      within that time would lose the mode.
+
+config ZMK_USJIS_LOG_LEVEL
+    int "Log level of the usjis module"
+    default 1
+    help
+      Zephyr log level (0 none, 1 error, 2 warning, 3 info, 4 debug).
+
+endif
+
+endmenu

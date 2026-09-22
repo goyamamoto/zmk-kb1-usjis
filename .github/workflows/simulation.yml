@@ -1,0 +1,76 @@
+name: Native input simulation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tests/simulation/**"
+      - "!tests/simulation/README.md"
+      - "scripts/prepare-simulation.py"
+      - "scripts/run-simulation.sh"
+      - "scripts/validate-repository.sh"
+      - "config/west.yml"
+      - ".github/workflows/simulation.yml"
+  pull_request:
+    paths:
+      - "tests/simulation/**"
+      - "!tests/simulation/README.md"
+      - "scripts/prepare-simulation.py"
+      - "scripts/run-simulation.sh"
+      - "scripts/validate-repository.sh"
+      - "config/west.yml"
+      - ".github/workflows/simulation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: simulation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  simulation:
+    runs-on: ubuntu-latest
+    # Upper bound. Seven variants at the runner's own hang timeouts (300 s
+    # configure + 600 s build + 60 s run each) would be 112 min, but a native
+    # amd64 runner finishes each variant in well under a minute; the first run
+    # also pulls the image and the pinned sources.
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+      - name: Cache pinned sources
+        uses: actions/cache@v4
+        with:
+          path: |
+            workspace/simulation/zephyr
+            workspace/simulation/zmk-git
+          key: simulation-sources-${{ hashFiles('tests/simulation/dependencies.json') }}
+      - name: Cache simulation image
+        id: image-cache
+        uses: actions/cache@v4
+        with:
+          path: build/simulation-image.tar
+          key: simulation-image-${{ hashFiles('tests/simulation/Dockerfile', 'tests/simulation/requirements.txt') }}
+      - name: Load cached simulation image
+        if: steps.image-cache.outputs.cache-hit == 'true'
+        run: docker load -i build/simulation-image.tar
+      - name: Run pinned native simulation and negative controls
+        run: bash scripts/run-simulation.sh
+      - name: Save simulation image for the cache
+        if: steps.image-cache.outputs.cache-hit != 'true'
+        run: |
+          tag="$(python3 -c 'import hashlib; h=hashlib.sha256(); [h.update(open(f,"rb").read()) for f in ("tests/simulation/Dockerfile","tests/simulation/requirements.txt")]; print(h.hexdigest()[:16])')"
+          docker save -o build/simulation-image.tar "zmk-usjis-simulation:$tag"
+      - name: Retain simulation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-simulation-evidence
+          path: |
+            build/simulation-results/*.json
+            build/simulation-results/*.log
+            build/simulation-results/*.overlay
+            build/simulation-results/*/zephyr/.config
+          include-hidden-files: true
+          if-no-files-found: warn

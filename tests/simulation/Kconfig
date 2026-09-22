@@ -1,0 +1,53 @@
+mainmenu "US-JIS native simulation"
+
+source "Kconfig.zephyr"
+
+# Only the symbols consumed by the unchanged ZMK units under test.
+config ZMK_LOG_LEVEL
+    int
+    default 0
+
+config ZMK_HID_REPORT_TYPE_HKRO
+    bool
+    default y
+
+config ZMK_HID_KEYBOARD_REPORT_SIZE
+    int
+    default 6
+
+config ZMK_HID_CONSUMER_REPORT_SIZE
+    int
+    default 6
+
+config ZMK_HID_CONSUMER_REPORT_USAGES_FULL
+    bool
+    default y
+
+config ADAPATIVE_NKRO
+    bool "Exercise Keychron adaptive NKRO state"
+    default n
+
+# Symbols the pinned hid.h/hid.c/ble.h test with IS_ENABLED(). Declared here so
+# the effective .config records them as "not set" (as the keychron_b1_us build
+# does) instead of leaving them undefined; the runner's Kconfig coverage check
+# fails on undefined symbols. They need a prompt: promptless bools that default
+# to n are omitted from .config entirely.
+config ZMK_HID_REPORT_TYPE_NKRO
+    bool "Not used by the B1 US build; recorded as not set"
+    default n
+
+config ZMK_HID_CONSUMER_REPORT_USAGES_BASIC
+    bool "Not used by the B1 US build; recorded as not set"
+    default n
+
+config ZMK_SPLIT
+    bool "Not used by the B1 US build; recorded as not set"
+    default n
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    bool "Not used by the B1 US build; recorded as not set"
+    default n
+
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    int
+    default 0

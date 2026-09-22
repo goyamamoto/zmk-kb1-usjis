@@ -1,0 +1,18 @@
+#include <dt-bindings/zmk/keys.h>
+
+/* Bindings for the substituter tests: plain key presses and the mode behavior
+ * of this repository. The Mod-Morph bindings of app.overlay are not used. */
+/ {
+    behaviors {
+        kp: key_press {
+            compatible = "zmk,behavior-key-press";
+            label = "SIM_KP";
+            #binding-cells = <1>;
+        };
+        usjis: usjis {
+            compatible = "zmk,behavior-usjis";
+            label = "USJIS";
+            #binding-cells = <1>;
+        };
+    };
+};

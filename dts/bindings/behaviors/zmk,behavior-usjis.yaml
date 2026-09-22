@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: MIT
+
+description: US-JIS substitution mode behavior (USJIS_OFF, USJIS_ON, USJIS_TOG)
+
+compatible: "zmk,behavior-usjis"
+
+include: one_param.yaml

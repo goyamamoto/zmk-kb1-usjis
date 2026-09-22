@@ -1,0 +1,19 @@
+# Local west workspace and reference checkouts
+/workspace/
+/.west/
+
+# Build outputs
+/build/
+/build-*/
+*.bin
+*.elf
+*.hex
+*.map
+*.uf2
+
+# Local tooling
+/.cache/
+/.venv/
+__pycache__/
+*.py[cod]
+.DS_Store

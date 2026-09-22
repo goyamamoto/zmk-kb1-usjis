@@ -1,0 +1,44 @@
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/modifiers.h>
+
+/* JIS names describe HOST positions, not US legends in keys.h. */
+#define JIS_CARET EQUAL
+#define JIS_AT LEFT_BRACKET
+#define JIS_LB RIGHT_BRACKET
+#define JIS_RB NON_US_HASH
+#define JIS_COLON SINGLE_QUOTE
+#define JIS_RO INTERNATIONAL_1
+#define JIS_YEN INTERNATIONAL_3
+
+#define MORPH(node, name, normal, shifted) \
+    node { \
+        compatible = "zmk,behavior-mod-morph"; \
+        label = name; \
+        #binding-cells = <0>; \
+        bindings = <&kp normal>, <&kp shifted>; \
+        mods = <(MOD_LSFT | MOD_RSFT)>; \
+    };
+
+/ {
+    behaviors {
+        kp: key_press {
+            compatible = "zmk,behavior-key-press";
+            label = "SIM_KP";
+            #binding-cells = <1>;
+        };
+        MORPH(grave, "SIM_GRAVE", LS(JIS_AT), LS(JIS_CARET))
+        MORPH(n2, "SIM_N2", N2, JIS_AT)
+        MORPH(n6, "SIM_N6", N6, JIS_CARET)
+        MORPH(n7, "SIM_N7", N7, LS(N6))
+        MORPH(n8, "SIM_N8", N8, LS(JIS_COLON))
+        MORPH(n9, "SIM_N9", N9, LS(N8))
+        MORPH(n0, "SIM_N0", N0, LS(N9))
+        MORPH(minus, "SIM_MINUS", MINUS, LS(JIS_RO))
+        MORPH(equal, "SIM_EQUAL", LS(MINUS), LS(SEMICOLON))
+        MORPH(lb, "SIM_LB", JIS_LB, LS(JIS_LB))
+        MORPH(rb, "SIM_RB", JIS_RB, LS(JIS_RB))
+        MORPH(backslash, "SIM_BACKSLASH", JIS_RO, LS(JIS_YEN))
+        MORPH(semi, "SIM_SEMI", SEMICOLON, JIS_COLON)
+        MORPH(quote, "SIM_QUOTE", LS(N7), LS(N2))
+    };
+};

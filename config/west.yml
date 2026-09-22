@@ -1,0 +1,46 @@
+manifest:
+  remotes:
+    - name: keychron
+      url-base: https://github.com/Keychron
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+
+  projects:
+    - name: zmk
+      remote: keychron
+      revision: c284513085c005edf5f9a52b28c8090cc6ed01d2
+      import: app/west.yml
+    # Keychron ZMK's app/west.yml imports Zephyr by the branch name
+    # v3.2.0+zmk-fixes. This entry overrides it with the resolved commit
+    # (the same one tests/simulation/dependencies.json pins), so that a
+    # build does not move when the branch does. The import block is the
+    # one from app/west.yml at the pinned ZMK commit. Zephyr's own manifest
+    # pins the HAL and library modules by commit.
+    - name: zephyr
+      remote: zmkfirmware
+      revision: 1ae0eb5ce8adafcec993e6fb8f4eeb6f818a7772
+      clone-depth: 1
+      import:
+        name-blocklist:
+          - ci-tools
+          - hal_altera
+          - hal_cypress
+          - hal_infineon
+          - hal_microchip
+          - hal_nxp
+          - hal_openisa
+          - hal_silabs
+          - hal_xtensa
+          - hal_st
+          - hal_ti
+          - loramac-node
+          - mcuboot
+          - mcumgr
+          - net-tools
+          - openthread
+          - edtt
+          - trusted-firmware-m
+          - sof
+
+  self:
+    path: config

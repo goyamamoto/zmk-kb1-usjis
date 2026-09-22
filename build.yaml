@@ -1,0 +1,7 @@
+include:
+  - board: keychron
+    shield: keychron_b1_us
+    artifact-name: keychron-b1-us-usjis
+  - board: keychron
+    shield: keychron_b1_usn
+    artifact-name: keychron-b1-usn-usjis

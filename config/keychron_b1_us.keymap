@@ -1,0 +1,311 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * Keymap for the Keychron B1 Pro US. Based on
+ * app/boards/shields/keychron/b1/us/keychron_b1_us.keymap from Keychron ZMK
+ * at commit c284513085c005edf5f9a52b28c8090cc6ed01d2 (the commit
+ * config/west.yml pins). Differences from that file:
+ *  - combo_jz (Fn+J+Z, factory reset) and combo_xl (Fn+X+L, F-row swap) are
+ *    removed, so J, Z, X and L are no longer held back while Fn is held.
+ *  - Factory reset is Fn+Shift+Esc held for 10 seconds. The Esc position of
+ *    both Fn layers is a mod-morph: without Shift it is a plain Esc, with
+ *    Shift it is long_press_recover (a tap outputs nothing).
+ *  - F-row swap is Fn+Caps Lock held for 3 seconds (long_press_change on the
+ *    Caps Lock position of both Fn layers; a tap outputs nothing).
+ *  - Fn+Tab toggles US-JIS substitution (&usjis USJIS_TOG on the Tab position
+ *    of both Fn layers).
+ *  - The two keys beside Space are hold-taps (ime_ht): held, they are the
+ *    modifier of the OS mode as before (Win: Alt/RAlt; Mac: Cmd/RCmd); tapped,
+ *    the left one sends the IME-off key and the right one the IME-on key
+ *    (Win: Muhenkan/Henkan; Mac: Eisu/Kana). B1_IME_TAP in
+ *    keymap-options.h turns this off.
+ *  - Caps Lock and Left Ctrl are swapped on the base layers (B1_SWAP_CTRL_CAPS
+ *    in keymap-options.h; the Fn layers keep Fn+Caps Lock for the F-row swap).
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/usjis.h>
+#include "keymap-options.h"
+
+#if B1_IME_TAP
+#define KEY_L_OF_SPACE_MAC &ime_ht LCMD LANG2
+#define KEY_R_OF_SPACE_MAC &ime_ht RCMD LANG1
+#define KEY_L_OF_SPACE_WIN &ime_ht LALT INT5
+#define KEY_R_OF_SPACE_WIN &ime_ht RALT INT4
+#else
+#define KEY_L_OF_SPACE_MAC &uc LCMD
+#define KEY_R_OF_SPACE_MAC &uc RCMD
+#define KEY_L_OF_SPACE_WIN &kp LALT
+#define KEY_R_OF_SPACE_WIN &kp RALT
+#endif
+
+#if B1_SWAP_CTRL_CAPS
+#define KEY_CAPS_POSITION &kp LCTRL
+#define KEY_LCTRL_POSITION &kp CLCK
+#else
+#define KEY_CAPS_POSITION &kp CLCK
+#define KEY_LCTRL_POSITION &kp LCTRL
+#endif
+
+/ {
+    ZMK_MACRO(recover, bindings = <&out OUT_RECOVER>;)
+    ZMK_MACRO(change, bindings = <&out OUT_FN>;)
+    ZMK_MACRO(fn_win, bindings = <&out OUT_FN_WIN>;)
+
+    ZMK_MACRO(en_bootloader, bindings = <&bootloader>;)
+    ZMK_MACRO1(MA,bindings=<&kp 0x770000>;)
+
+    long_press_recover:l1 {
+        compatible = "zmk,behavior-hold-tap";
+        label = "l1";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <10000>;  // delay amount in ms
+        bindings = <&recover>, <&none>;
+    };
+
+    long_press_change:l2{
+        compatible = "zmk,behavior-hold-tap";
+        label = "lp_change";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;  // delay amount in ms
+        bindings = <&change>, <&none>;
+    };
+    long_press_bootloader:l3{
+        compatible = "zmk,behavior-hold-tap";
+        label = "lp_bootloader";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;  // delay amount in ms
+        bindings = <&en_bootloader>, <&none>;
+    };
+    // Modifier when held, IME key when tapped (the keys beside Space).
+    // hold-preferred: any key pressed while it is held makes it the modifier,
+    // so Alt/Cmd shortcuts are not delayed; a tap is decided on release.
+    ime_ht: ime_hold_tap {
+        compatible = "zmk,behavior-hold-tap";
+        label = "IME_HT";
+        #binding-cells = <2>;
+        flavor = "hold-preferred";
+        tapping-term-ms = <200>;
+        bindings = <&kp>, <&kp>;
+    };
+    // US-JIS substitution mode (docs/design/usjis-substitution.md).
+    usjis: usjis {
+        compatible = "zmk,behavior-usjis";
+        label = "USJIS";
+        #binding-cells = <1>;
+    };
+    // Fn+Esc: Esc. Fn+Shift+Esc: factory reset after a 10 s hold.
+    esc_reset: esc_reset {
+        compatible = "zmk,behavior-mod-morph";
+        label = "ESC_RESET";
+        #binding-cells = <0>;
+        bindings = <&kp ESC>, <&long_press_recover 0 0>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+    long_press_fn_win:l4{
+        compatible = "zmk,behavior-hold-tap";
+        label = "lp_fn_win";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;   
+        bindings = <&fn_win>, <&none>;
+    };
+   
+
+    combos1 {
+        compatible = "zmk,combos";
+        combo_b {
+            timeout-ms = <1000>;
+            layers =< 1 3>;
+            //slow-release = <true>;
+            key-positions = <60>; //fn+b
+            bindings = <&out OUT_BAT>;
+        };
+
+        combo_win_l {
+            timeout-ms = <1000>;
+            layers =< 1 3>;
+            //slow-release = <true>;
+            key-positions = <68>; //fn+win
+            bindings = <&long_press_fn_win 0 0>;
+        };
+
+        combo_t0 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <80 90>;  
+            bindings = <&to 3 >;
+        };
+        combo_t1 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <80 91>;  
+            bindings = <&tog 3 >;
+        };
+        combo_t2 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <80 92>;  
+            bindings = <&sl 3 >;
+        };
+        combo_t3 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <70 93>;  
+            bindings = <&lt 3 SPACE>;
+        };
+        combo_t4 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <81 94>;  
+            bindings = <&sk LSHIFT>;
+        };
+        combo_t5 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <81 93>;  
+            bindings = <&mt LSHIFT SPACE>;
+        };
+        combo_t6 {
+            timeout-ms = <10 >;
+            layers =<4>;
+          
+            key-positions = <81 93>;  
+            bindings = <&gresc>;
+        };
+    };
+
+    td0 {
+        compatible = "zmk,behavior-tap-dance";
+        label = "TAPD_LAYER";
+        #binding-cells = <1>;
+        tapping-term-ms = <350>;
+        bindings =<&mo 0>,<&mo 0>,<&mo 0>,<&mo 0>,<&to 0>;
+    };
+    ZMK_MACRO(bt_pair0, bindings = <&bt BT_PAIR 0>;)
+    ZMK_MACRO(bt_pair1, bindings = <&bt BT_PAIR 1>;)
+    ZMK_MACRO(bt_pair2, bindings = <&bt BT_PAIR 2>;)
+    ZMK_MACRO(bt_pair3, bindings = <&bt BT_PAIR 3>;)
+    ZMK_MACRO(bt_recon_0, bindings = <&bt BT_SEL 0>;)
+    ZMK_MACRO(bt_recon_1, bindings = <&bt BT_SEL 1>;)
+    ZMK_MACRO(bt_recon_2, bindings = <&bt BT_SEL 2>;)
+    ZMK_MACRO(bt_recon_3, bindings = <&bt BT_SEL 3>;)
+    
+
+
+    bt_pair_0: bt_pair_0 {
+        compatible = "zmk,behavior-hold-tap";
+        label = "bt_pair0";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;  // delay amount in ms
+        bindings = <&bt_pair0>, <&bt_recon_0>;
+    };
+    bt_pair_1: bt_pair_1 {
+        compatible = "zmk,behavior-hold-tap";
+        label = "bt_pair1";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;  // delay amount in ms
+        bindings = <&bt_pair1>, <&bt_recon_1>;
+    };
+    bt_pair_2: bt_pair_2 {
+        compatible = "zmk,behavior-hold-tap";
+        label = "bt_pair2";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;  // delay amount in ms
+        bindings = <&bt_pair2>, <&bt_recon_2>;
+    };
+    bt_pair_3: bt_pair_3 {
+        compatible = "zmk,behavior-hold-tap";
+        label = "bt_pair3";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;  // delay amount in ms
+        bindings = <&bt_pair3>, <&bt_recon_3>;
+    };
+    uc:user_custom {
+        compatible = "zmk,behavior-key-press";
+        label ="user_custom";
+        #binding-cells =<1>;
+    };
+
+	keymap {
+    	compatible = "zmk,keymap";
+            //mac
+        default_layer {
+        bindings = <
+          //ESC         //f1                    //f2                //f3                                    //f4                //f5                //f6            //f7            //f8                //f9        //f10       //f11               //f12               //DEL                                              
+        &kp ESC     &kp C_BRIGHTNESS_DEC    &kp C_BRIGHTNESS_INC    &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS   &kp  C_AC_MAC_LAUNCH    &kp C_AC_SEARCH     &kp C_AL_LOCK   &kp C_PREVIOUS  &kp C_PLAY_PAUSE    &kp C_NEXT  &kp C_MUTE  &kp C_VOLUME_DOWN   &kp C_VOLUME_UP     &kp DEL  
+        &kp GRAVE   &kp N1                  &kp N2                  &kp N3                              &kp N4                  &kp N5              &kp N6          &kp N7          &kp N8              &kp N9      &kp N0      &kp MINUS           &kp EQUAL           &kp BSPC 
+        &kp TAB     &kp Q                   &kp W                   &kp E                               &kp R                   &kp T               &kp Y           &kp U           &kp I               &kp O       &kp P       &kp LBKT            &kp RBKT            &kp BSLH      
+        KEY_CAPS_POSITION &kp A                 &kp S                   &kp D                               &kp F                   &kp G               &kp H           &kp J           &kp K               &kp L       &kp SEMI    &kp SQT                         &kp RET
+        &kp LSHFT   &kp Z                   &kp X                   &kp C                               &kp V                   &kp B               &kp N           &kp M           &kp COMMA           &kp DOT     &kp FSLH                                    &kp RSHFT 
+        KEY_LCTRL_POSITION &uc LALT             KEY_L_OF_SPACE_MAC             &kp SPACE                                                                                                KEY_R_OF_SPACE_MAC  &mo 1       &kp LEFT    &kp UP              &kp DOWN            &kp RIGHT
+        &mo 2       &out OUT_BLE            &out OUT_24G            &out OUT_CHG                        &out OUT_CHGD 
+            >;
+        };
+        //mac
+        layer_one  {
+        bindings = < 
+        &esc_reset  &kp F1                  &kp F2                  &kp F3                              &kp F4                  &kp F5              &kp F6          &kp F7          &kp F8              &kp F9      &kp F10     &kp F11             &kp F12             &trans
+        &trans      &bt_pair_0 0 0          &bt_pair_1 0 0          &bt_pair_2 0 0                      &bt_pair_3 0 0          &trans              &trans          &trans          &trans              &trans      &trans      &trans              &kp C_AC_SEARCH     &trans      
+        &usjis USJIS_TOG &trans                  &trans                  &trans                              &trans                  &trans              &trans          &trans          &kp INS             &trans      &trans      &trans              &trans              &uc LG(LS(N4))
+        &long_press_change 0 0 &trans                  &trans                  &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans      &trans                      &trans
+        &trans      &trans                  &trans                  &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans                                  &uc LC(LG(SPACE))
+        &trans      &trans                  &trans                         &trans                                                                                                   &kp RCTRL           &trans        &kp HOME   &kp PG_UP   &kp PG_DN    &kp END  
+        //
+        &none       &none                   &none                   &none                               &none
+            >;
+        };
+        //win
+        layer_two {
+ 		bindings = <
+        &kp ESC 	&kp F1 	               &kp F2 	                &kp F3 	                            &kp F4 	                &kp F5 	            &kp F6 	        &kp F7 	        &kp F8 	            &kp F9 	     &kp F10 	&kp F11 	         &kp F12 	         &kp DEL     
+        &kp GRAVE	&kp N1 	               &kp N2 	                &kp N3 	                            &kp N4 	                &kp N5 	            &kp N6 	        &kp N7 	        &kp N8 	            &kp N9 	     &kp N0     &kp MINUS 	         &kp EQUAL 	         &kp BSPC
+        &kp TAB 	&kp Q 	               &kp W                    &kp E 	                            &kp R 	                &kp T               &kp Y 	        &kp U 	        &kp I 	            &kp O 	     &kp P 		&kp LBKT 	         &kp RBKT 	         &kp BSLH 	 	
+        KEY_CAPS_POSITION &kp A 	               &kp S 	                &kp D 	                            &kp F 	                &kp G 	            &kp H 	        &kp J 	        &kp K 	            &kp L 	     &kp SEMI 	&kp SQT                      &kp RET
+        &kp LSHFT   &kp Z 	               &kp X 	                &kp C 	                            &kp V 	                &kp B 	            &kp N 	        &kp M 	        &kp COMMA           &kp DOT      &kp FSLH                                &kp RSHFT				
+        KEY_LCTRL_POSITION &kp LGUI            KEY_L_OF_SPACE_WIN             &kp SPACE              		                                                                            KEY_R_OF_SPACE_WIN  &mo 3 		  &kp LEFT 	 &kp UP      &kp DOWN 	&kp RIGHT
+        //
+        &none       &out OUT_BLE           &out OUT_24G             &out OUT_CHG                        &out OUT_CHGD 
+            >;
+        };
+        //win
+        layer_three {
+        bindings = < 
+                    //f1                    //f2                    //f3                                //f4                        //f5            //f6              //f7            //f8              //f9        //f10           //f11                         //f12                     
+        &esc_reset  &kp C_BRIGHTNESS_DEC    &kp C_BRIGHTNESS_INC        &uc LG(TAB)                         &uc LG(E)               &kp C_AC_SEARCH     &uc LG(L)       &kp C_PREVIOUS  &kp C_PLAY_PAUSE    &kp C_NEXT  &kp C_MUTE  &kp C_VOLUME_DOWN           &kp C_VOLUME_UP      &trans
+        &trans  &bt_pair_0 0 0          &bt_pair_1 0 0              &bt_pair_2 0 0                      &bt_pair_3 0 0          &trans              &trans          &trans          &trans              &trans      &trans      &trans                      &kp C_AL_CALC        &trans          
+        &usjis USJIS_TOG &trans                  &trans                      &trans                              &trans                  &trans              &trans          &trans          &kp INS             &trans      &trans      &trans                      &trans               &uc LG(LS(S))
+        &long_press_change 0 0 &trans                  &trans                      &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans      &trans                              &trans
+        &trans  &trans                  &trans                      &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans                                          &uc LG(DOT) 
+        &trans  &trans                  &trans                           &trans                                                                                                     &kp RCTRL           &trans      &kp HOME    &kp PG_UP    &kp PG_DN   &kp END    
+        //
+        &none   &none                   &none                       &none                               &none
+            >;
+        };
+   
+
+    	
+    
+	};
+};
+
+	

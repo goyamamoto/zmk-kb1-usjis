@@ -236,8 +236,14 @@ def run_variant(name, adaptive, negative=None, usjis=False):
     # Always build from scratch so the recorded executable hash and build log
     # describe a clean build of the pinned sources, not an incremental one.
     shutil.rmtree(build, ignore_errors=True)
+    # Zephyr caches toolchain checks in USER_CACHE_DIR. Without a writable
+    # cache directory it falls back to ZEPHYR_BASE/.cache, which is on the
+    # read-only source mount, and configure fails on a fresh results directory.
+    user_cache = OUT / ".cache" / "zephyr"
+    user_cache.mkdir(parents=True, exist_ok=True)
     command = ["cmake", "-S", str(APP), "-B", str(build), "-G", "Ninja",
                "-DBOARD=native_posix_64",
+               "-DUSER_CACHE_DIR=" + str(user_cache),
                "-DZMK_SOURCE_DIR=/repo/workspace/simulation/zmk",
                "-DCONFIG_ADAPATIVE_NKRO=" + ("y" if adaptive else "n")]
     if usjis:

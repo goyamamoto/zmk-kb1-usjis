@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build the B1 US firmware in the pinned image
         run: bash scripts/build-firmware.sh
       - name: Show what was built

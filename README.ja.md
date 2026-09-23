@@ -4,6 +4,13 @@
 
 Keychron B1 Pro US配列（PID `0x0711`）を、日本語キーボードとして固定されたホストでもキーキャップの印字どおりに打てるようにし、あわせて純正firmwareの使いにくい点を直したfirmwareです。KeychronのZMK forkの上に載せるZephyr moduleとkeymapで、コンテナ内で再現可能にbuildします。
 
+概要:
+
+- **US-JIS置換**（Fn+Tab）: 日本語キーボード配列に設定されたホストでも `` ` ~ @ ^ & * ( ) _ = + [ { ] } \ | : ' " `` がUSキーキャップの印字どおりに出る。初期状態はオフ、設定は電源を切っても残り、Winモードでだけ効く。
+- **スペース両隣のIMEキー**: 左をtapでIMEオフ、右をtapでIMEオン（Win: 無変換 / 変換、Mac: 英数 / かな）。押したままなら従来どおりAlt / Cmd。
+- **Caps Lockと左Ctrlの入れ替え**、Fn層の遅れなし、誤爆しない工場リセット。
+- NuPhy Air60 V2向けの同じ機能をQMKで実装したもの: [goyamamoto/qmk-firmware](https://github.com/goyamamoto/qmk-firmware)。
+
 ## 対応機種: まずPIDを確認してください
 
 KeychronはB1 Proという1つの名前で複数の版を売っています。このfirmwareはそのうちの1つ専用で、別の版に書き込んではいけません。版によってキーマトリクスと動いているfirmwareが違うため、合わないと良くてもキーが化けたり効かなくなったりします。

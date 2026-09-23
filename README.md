@@ -2,6 +2,15 @@
 
 Firmware for the Keychron B1 Pro US layout (PID `0x0711`) that types what its keycaps show even on hosts whose keyboard layout is fixed to Japanese, and that fixes a few usability problems of the stock firmware. It is a Zephyr module plus a keymap on top of Keychron's ZMK fork, built reproducibly in a container.
 
+Japanese: [README.ja.md](README.ja.md)
+
+At a glance:
+
+- **US-JIS mode** (Fn+Tab): on a host set to the Japanese keyboard layout, `` ` ~ @ ^ & * ( ) _ = + [ { ] } \ | : ' " `` type as printed on the US keycaps. Off by default, remembered across power cycles, Win mode only.
+- **IME keys beside Space**: tap the left one for IME off and the right one for IME on (Win: Muhenkan / Henkan, Mac: Eisu / Kana); held, they stay Alt / Cmd.
+- **Caps Lock and Left Ctrl swapped**, no Fn-layer delay, a factory reset that does not fire by accident.
+- Same features for the NuPhy Air60 V2 in QMK: [goyamamoto/qmk-firmware](https://github.com/goyamamoto/qmk-firmware).
+
 ## Supported hardware: check your PID first
 
 Keychron sells several B1 Pro versions under one name. This firmware is for exactly one of them, and firmware for another version must not be flashed: the versions differ in the key matrix and in the firmware they run, so a mismatch gives wrong or dead keys at best.

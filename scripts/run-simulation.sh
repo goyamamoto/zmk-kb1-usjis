@@ -15,7 +15,7 @@ grep -Fq "FROM $sim_base" tests/simulation/Dockerfile || {
 # hash of Dockerfile + requirements.txt, so a change always yields a new image.
 # Building needs the network once; the simulation run below has none.
 dockerfile_sha="$(python3 -c 'import hashlib; h=hashlib.sha256(); [h.update(open(f,"rb").read()) for f in ("tests/simulation/Dockerfile","tests/simulation/requirements.txt")]; print(h.hexdigest()[:16])')"
-sim_image="zmk-usjis-simulation:$dockerfile_sha"
+sim_image="zmk-kb1-usjis-simulation:$dockerfile_sha"
 if ! docker image inspect "$sim_image" >/dev/null 2>&1; then
   docker build --platform "$sim_platform" -t "$sim_image" -f tests/simulation/Dockerfile tests/simulation
 fi

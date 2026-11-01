@@ -118,7 +118,7 @@ if [[ "$step" == prepare ]]; then
   west update --narrow --fetch-opt=--depth=1
   if ! zephyr_patched; then
     git -C zephyr apply --check "$patch_file"
-    git -C zephyr -c user.name=zmk-usjis -c user.email=build@invalid \
+    git -C zephyr -c user.name=zmk-kb1-usjis -c user.email=build@invalid \
       am --committer-date-is-author-date "$patch_file"
   fi
   west list -f '{name} {path} {sha}' > /workspace/.west-list
